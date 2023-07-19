@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Model file selector</title>
+    <script src="https://unpkg.com/vue@2"></script>
+    <script src="https://unpkg.com/lodash@1.0.2"></script>
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <style type="text/css">
+      textarea {
+        min-width: 800px;
+        min-height: 600px;
+      }
+    </style>
+    <script type="text/x-template" id="modal-template">
+      <transition name="modal">
+        <!-- Component template -->
+        <div class="modal-mask">
+          <div class="modal-wrapper">
+            <div class="modal-container">
+              <div class="modal-header">
+                <slot name="header">
+                  search
+                </slot>
+              </div>
+              <div class="modal-body">
+                <div name="body" class="model-grid">
+
+                    <div v-for="model in filteredModelFiles" :key="model.id" :class="['model-item', { 'selected-model': selected == model || selectedModel == model}]" :style="{ backgroundImage: `url(${model.preview_url})` }" v-on:click="modalSelect(model)">
+                      <h3 class="model-title">{{ model.name }}</h3>
+                      <p v-if="selectedModel == model" :style="{color: 'white', zIndex:5}">(Selected)</p>
+                    </div>
+
+                </div>
+                <div class="row">
+                  <slot name="body">
+                      <div v-if="selected">
+                        <h4>{{selected.name}}</h4>
+                        <p>{{selected.description}}</p>
+                      </div>
+                  </slot>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <slot name="footer">
+                  <button class="modal-default-button" @click="$emit('close')">
+                    Close
+                  </button>
+                  <button class="modal-default-button" @click="$emit('select', selected)" v-if="selected">
+                    Use Model
+                  </button>
+                </slot>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Component template end-->
+
+      </transition>
+    </script>
+  </head>
+  <body>
+    <!-- app -->
+    <div id="app">
+      <button id="show-modal" @click="showModal = true">Select Model</button>
+      <hr />
+      <div>
+        <small>JSON Data</small><br />
+        <textarea v-model="jsonString" id="jsonString"></textarea>
+      </div>
+
+      <div v-if="selectedModel">
+        <p>Model info: {{ selectedModel.description }}</p>
+      </div>
+      <!-- use the modal component, pass in the prop -->
+      <modal
+        v-if="showModal"
+        @close="showModal = false"
+        @select="selectModel"
+        :model-files="modelFiles"
+        :selected-model="selectedModel"
+        :search-query="searchQuery"
+      >
+        <input slot="header" v-model="searchQuery" />
+      </modal>
+    </div>
+
+    <script>
+      // register modal component
+      Vue.component("modal", {
+        template: "#modal-template",
+        props: ["modelFiles", "selectedModel", "searchQuery"],
+        computed: {
+          filteredModelFiles() {
+            if (!this.searchQuery) {
+              return this.modelFiles;
+            }
+            const searchQueryLowerCase = this.searchQuery.toLowerCase();
+            return this.modelFiles.filter((model) =>
+              model.name.toLowerCase().includes(searchQueryLowerCase)
+            );
+          },
+        },
+        data() {
+          return {
+            selected: null,
+          };
+        },
+        methods: {
+          modalSelect: function (model) {
+            this.selected = model;
+          },
+        },
+      });
+
+      // start app
+      new Vue({
+        el: "#app",
+        data: {
+          showModal: false,
+          selectedModel: null,
+          modelFiles: [
+            {
+              id: 1,
+              filename: "rivokaldma",
+              name: "Kaldma Rass",
+              description: "Kaldma Rass (desc.)",
+              version: "3.0",
+              enabled: true,
+              model_type: "rivo",
+              preview_url:
+                "https://img.freepik.com/premium-vector/young-girl-anime-style-character-vector-illustration-design-manga-anime-girl_147933-100.jpg?w=2000",
+              sample_prompts: [
+                {
+                  prompt: "kaldma",
+                  negative_prompt: "rivo",
+                  image_url: "",
+                },
+              ],
+              source_id: null,
+              nsfw: false,
+              created_at: null,
+              updated_at: null,
+            },
+            {
+              id: 2,
+              filename: "rivokaldma",
+              name: "Aabitsa Kukk",
+              description: "Aabitsa Kukk (desc.)",
+              version: "3.0",
+              enabled: true,
+              model_type: "rivo",
+              preview_url:
+                "https://img.freepik.com/premium-vector/young-girl-anime-style-character-vector-illustration-design-manga-anime-girl_147933-100.jpg?w=2000",
+              sample_prompts: [
+                {
+                  prompt: "kaldma",
+                  negative_prompt: "rivo",
+                  image_url: "",
+                },
+              ],
+              source_id: null,
+              nsfw: false,
+              created_at: null,
+              updated_at: null,
+            },
+            {
+              id: 3,
+              filename: "rivokaldma",
+              name: "Deforum",
+              description: "Deforum(desc.)",
+              version: "3.0",
+              enabled: true,
+              model_type: "rivo",
+              preview_url:
+                "https://img.freepik.com/premium-vector/young-girl-anime-style-character-vector-illustration-design-manga-anime-girl_147933-100.jpg?w=2000",
+              sample_prompts: [
+                {
+                  prompt: "kaldma",
+                  negative_prompt: "rivo",
+                  image_url: "",
+                },
+              ],
+              source_id: null,
+              nsfw: false,
+              created_at: null,
+              updated_at: null,
+            },
+            {
+              id: 4,
+              filename: "rivokaldma",
+              name: "Andrus",
+              description: "Andrus(desc.)",
+              version: "3.0",
+              enabled: true,
+              model_type: "rivo",
+              preview_url:
+                "https://img.freepik.com/premium-vector/young-girl-anime-style-character-vector-illustration-design-manga-anime-girl_147933-100.jpg?w=2000",
+              sample_prompts: [
+                {
+                  prompt: "kaldma",
+                  negative_prompt: "rivo",
+                  image_url: "",
+                },
+              ],
+              source_id: null,
+              nsfw: false,
+              created_at: null,
+              updated_at: null,
+            },
+            {
+              id: 5,
+              filename: "rivokaldma",
+              name: "kk",
+              description: "kk(desc.)",
+              version: "3.0",
+              enabled: true,
+              model_type: "rivo",
+              preview_url:
+                "https://img.freepik.com/premium-vector/young-girl-anime-style-character-vector-illustration-design-manga-anime-girl_147933-100.jpg?w=2000",
+              sample_prompts: [
+                {
+                  prompt: "kaldma",
+                  negative_prompt: "rivo",
+                  image_url: "",
+                },
+              ],
+              source_id: null,
+              nsfw: false,
+              created_at: null,
+              updated_at: null,
+            },
+          ],
+          jsonString: "",
+          searchQuery: "",
+        },
+        methods: {
+          selectModel: function (model) {
+            this.selectedModel = model;
+            this.showModal = false;
+          },
+        },
+        mounted() {
+          this.jsonString = JSON.stringify(this.modelFiles);
+        },
+        watch: {
+          jsonString: function (newValue) {
+            try {
+              let newJson = JSON.parse(newValue);
+
+              this.modelFiles = newJson;
+              console.log(this.modelFiles);
+            } catch (err) {
+              console.log("seems to be invalid json: " + err);
+              this.jsonString = JSON.stringify(this.modelFiles);
+            }
+          },
+        },
+      });
+
+      class Modelfile {
+        constructor() {
+          this.id = null;
+          this.filename = "";
+          this.name = "";
+          this.description = "";
+          this.version = "";
+          this.enabled = false;
+          this.model_type = "";
+          this.sample_prompts = [
+            { prompt: null, negative_prompt: null, image_url: null },
+          ];
+          this.source_id = null;
+          this.nsfw = false;
+          this.created_at = null;
+          this.updated_at = null;
+        }
+      }
+    </script>
+  </body>
+</html>
